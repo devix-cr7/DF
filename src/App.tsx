@@ -1,13 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Workspace } from "./components/layout/Workspace";
+import { IntroScene, hasSeenIntro } from "./components/intro/IntroScene";
 import { useTheme } from "./store/theme";
 
 export default function App() {
   const { theme } = useTheme();
+  const [showIntro, setShowIntro] = useState(() => !hasSeenIntro());
 
   useEffect(() => {
     document.documentElement.classList.toggle("light", theme === "light");
   }, [theme]);
 
-  return <Workspace />;
+  return (
+    <>
+      {showIntro && <IntroScene onDone={() => setShowIntro(false)} />}
+      <Workspace />
+    </>
+  );
 }
