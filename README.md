@@ -28,6 +28,6 @@ npm run dev
 1. Push this repo to GitHub as `DevForge`.
 2. Repo Settings → Pages → Source → **GitHub Actions**.
 3. Push to `main` — the included workflow (`.github/workflows/deploy.yml`) builds and deploys automatically.
-4. Live at `https://devix-cr7.github.io/DevForge/`.
+4. Live at `https://devix-cr7.github.io/DF/`.
 
 If you rename the repo, update `base` in `vite.config.ts` to match.
