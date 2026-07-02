@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #31363F transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #31363F; border-radius: 8px; }
+*::-webkit-scrollbar-thumb:hover { background: #565C68; }
+
+:root {
+  --forge-bg: 10 11 13;
+  --forge-panel: 17 19 23;
+  --forge-panel2: 22 25 32;
+  --forge-border: 34 38 45;
+  --forge-borderHi: 49 54 63;
+  --forge-text: 237 235 231;
+  --forge-muted: 139 144 154;
+  --forge-faint: 86 92 104;
+}
+
+.light {
+  --forge-bg: 250 249 247;
+  --forge-panel: 255 255 255;
+  --forge-panel2: 243 241 238;
+  --forge-border: 227 224 218;
+  --forge-borderHi: 210 206 198;
+  --forge-text: 26 24 22;
+  --forge-muted: 107 102 94;
+  --forge-faint: 156 150 140;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: rgb(var(--forge-bg));
+  color: rgb(var(--forge-text));
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:focus-visible {
+  outline: 2px solid #D97B2B;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* signature: molten underline that pours between active tab/nav positions */
+.molten-indicator {
+  background: linear-gradient(90deg, #D97B2B, #F3C08A, #D97B2B);
+  background-size: 200% 100%;
+  animation: pour 3s ease-in-out infinite;
+}
