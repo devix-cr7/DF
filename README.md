@@ -1,4 +1,4 @@
- # DevForge
+# DevForge
 
 A premium, desktop-like developer workspace. Local-first, plugin-based, dark by default.
 
