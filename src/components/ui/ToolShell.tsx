@@ -7,11 +7,13 @@ export function ToolShell({
   description,
   toolbar,
   children,
+  flush = false,
 }: {
   title: string;
   description: string;
   toolbar?: ReactNode;
   children: ReactNode;
+  flush?: boolean;
 }) {
   return (
     <motion.div
@@ -31,7 +33,9 @@ export function ToolShell({
         </div>
         {toolbar && <div className="flex shrink-0 flex-wrap items-center gap-2">{toolbar}</div>}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">{children}</div>
+      <div className={flush ? "min-h-0 flex-1" : "min-h-0 flex-1 overflow-y-auto p-3 sm:p-5"}>
+        {children}
+      </div>
     </motion.div>
   );
 }

@@ -1,16 +1,24 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+interface HistoryEntry {
+  id: string;
+  toolId: string;
+  ts: number;
+}
+
 interface WorkspaceState {
   openTabs: string[];
   activeTab: string;
   favorites: string[];
   recents: string[];
+  historyLog: HistoryEntry[];
   openTool: (id: string) => void;
   closeTab: (id: string) => void;
   setActive: (id: string) => void;
   toggleFavorite: (id: string) => void;
   goDashboard: () => void;
+  clearHistory: () => void;
 }
 
 export const useWorkspace = create<WorkspaceState>()(
@@ -20,13 +28,15 @@ export const useWorkspace = create<WorkspaceState>()(
       activeTab: "dashboard",
       favorites: [],
       recents: [],
+      historyLog: [],
 
       openTool: (id) => {
-        const { openTabs, recents } = get();
+        const { openTabs, recents, historyLog } = get();
         set({
           openTabs: openTabs.includes(id) ? openTabs : [...openTabs, id],
           activeTab: id,
           recents: [id, ...recents.filter((r) => r !== id)].slice(0, 6),
+          historyLog: [{ id: crypto.randomUUID(), toolId: id, ts: Date.now() }, ...historyLog].slice(0, 200),
         });
       },
 
@@ -52,6 +62,8 @@ export const useWorkspace = create<WorkspaceState>()(
       },
 
       goDashboard: () => set({ activeTab: "dashboard" }),
+
+      clearHistory: () => set({ historyLog: [] }),
     }),
     { name: "devforge-workspace" }
   )
