@@ -55,14 +55,15 @@ export default function JsonTool() {
         </>
       }
     >
-      <div className="grid h-full grid-cols-2 gap-4">
+      <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-2">
         <CodeArea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Paste JSON here…"
+          className="min-h-[240px] md:min-h-0"
         />
-        <div className="relative h-full">
-          <CodeArea value={error ? "" : output} readOnly placeholder="Formatted output…" />
+        <div className="relative min-h-[240px] md:h-full">
+          <CodeArea value={error ? "" : output} readOnly placeholder="Formatted output…" className="h-full" />
           {error && (
             <div className="absolute inset-3.5 flex items-start gap-2 rounded-lg border border-red-900/40 bg-red-950/30 p-3 text-[13px] text-red-300">
               <Sparkles size={14} className="mt-0.5 shrink-0" />

@@ -57,9 +57,9 @@ export default function Base64Tool() {
           </button>
         ))}
       </div>
-      <div className="grid h-[calc(100%-3rem)] grid-cols-2 gap-4">
-        <CodeArea value={input} onChange={(e) => setInput(e.target.value)} />
-        <CodeArea value={error ?? output} readOnly className={error ? "text-red-400" : ""} />
+      <div className="grid h-auto grid-cols-1 gap-4 md:h-[calc(100%-3rem)] md:grid-cols-2">
+        <CodeArea value={input} onChange={(e) => setInput(e.target.value)} className="min-h-[220px] md:min-h-0" />
+        <CodeArea value={error ?? output} readOnly className={`min-h-[220px] md:min-h-0 ${error ? "text-red-400" : ""}`} />
       </div>
     </ToolShell>
   );

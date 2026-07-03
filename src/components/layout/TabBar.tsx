@@ -8,7 +8,7 @@ export function TabBar() {
   const { openTabs, activeTab, setActive, closeTab, goDashboard } = useWorkspace();
 
   return (
-    <div className="flex h-11 flex-none items-center border-b border-forge-border bg-forge-panel/40 px-1">
+    <div className="flex h-11 flex-none items-center overflow-x-auto border-b border-forge-border bg-forge-panel/40 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <Tab
         label="Dashboard"
         icon={<LayoutDashboard size={13} />}

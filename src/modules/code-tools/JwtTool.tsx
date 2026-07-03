@@ -42,12 +42,12 @@ export default function JwtTool() {
         {!valid && token.trim() && (
           <p className="text-xs text-red-400">Not a valid JWT structure.</p>
         )}
-        <div className="grid min-h-0 flex-1 grid-cols-2 gap-4">
-          <div className="flex min-h-0 flex-col gap-1.5">
+        <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex min-h-[180px] flex-col gap-1.5 md:min-h-0">
             <span className="text-xs font-semibold text-temper-400">HEADER</span>
             <CodeArea value={header ?? ""} readOnly />
           </div>
-          <div className="flex min-h-0 flex-col gap-1.5">
+          <div className="flex min-h-[180px] flex-col gap-1.5 md:min-h-0">
             <span className="text-xs font-semibold text-ember-400">PAYLOAD</span>
             <CodeArea value={payload ?? ""} readOnly />
           </div>

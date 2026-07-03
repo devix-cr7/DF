@@ -3,6 +3,9 @@ import { Flame, Star, Clock, ArrowUpRight } from "lucide-react";
 import { tools, categories } from "../../modules/registry";
 import { useWorkspace } from "../../store/workspace";
 import { Panel } from "../../components/ui/Panel";
+import { ConstellationField } from "../../components/ui/ConstellationField";
+import { AnimatedText } from "../../components/ui/AnimatedText";
+import { TiltCard } from "../../components/ui/TiltCard";
 
 const container = {
   hidden: {},
@@ -19,17 +22,32 @@ export function Dashboard() {
   const recentTools = recents.map((id) => tools.find((t) => t.id === id)).filter(Boolean) as typeof tools;
 
   return (
-    <div className="h-full overflow-y-auto px-8 py-8">
-      <motion.div initial="hidden" animate="show" variants={container} className="mx-auto max-w-5xl">
+    <div className="relative h-full overflow-y-auto px-4 py-6 sm:px-8 sm:py-8">
+      <ConstellationField count={34} />
+      <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 mx-auto max-w-5xl">
         <motion.div variants={item} className="mb-8 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-xl bg-forge-gradient shadow-glow">
+          <motion.div
+            initial={{ scale: 0.6, opacity: 0, rotate: -20 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="grid h-11 w-11 place-items-center rounded-xl bg-forge-gradient shadow-glow"
+          >
             <Flame size={20} className="text-forge-bg" strokeWidth={2.5} />
-          </div>
+          </motion.div>
           <div>
-            <h1 className="font-display text-xl font-semibold">Welcome back to DevForge</h1>
-            <p className="text-[13px] text-forge-muted">
+            <AnimatedText
+              as="h1"
+              text="Welcome back to DevForge"
+              className="font-display text-xl font-semibold"
+            />
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+              className="text-[13px] text-forge-muted"
+            >
               {tools.length} tools · {categories.length} categories · everything runs locally
-            </p>
+            </motion.p>
           </div>
         </motion.div>
 
@@ -73,12 +91,7 @@ function ToolGrid({ list, onOpen }: { list: typeof tools; onOpen: (id: string) =
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {list.map((tool) => (
-        <motion.button
-          key={tool.id}
-          onClick={() => onOpen(tool.id)}
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.2 }}
-        >
+        <TiltCard key={tool.id} onClick={() => onOpen(tool.id)} className="cursor-pointer rounded-xl">
           <Panel className="group flex h-full flex-col gap-2.5 p-4 text-left transition-colors hover:border-forge-borderHi">
             <div className="flex items-center justify-between">
               <div className="grid h-8 w-8 place-items-center rounded-lg bg-forge-panel2 text-ember-400">
@@ -94,7 +107,7 @@ function ToolGrid({ list, onOpen }: { list: typeof tools; onOpen: (id: string) =
               <p className="text-[11.5px] text-forge-muted">{tool.description}</p>
             </div>
           </Panel>
-        </motion.button>
+        </TiltCard>
       ))}
     </div>
   );

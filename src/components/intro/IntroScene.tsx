@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame } from "lucide-react";
 import { tools } from "../../modules/registry";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const SEEN_KEY = "devforge-intro-seen";
 
@@ -25,6 +26,8 @@ const SCATTER = [
 export function IntroScene({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<"in" | "out">("in");
   const [visible, setVisible] = useState(true);
+  const isMobile = useIsMobile();
+  const scale = isMobile ? 0.45 : 1;
   const icons = tools.slice(0, SCATTER.length);
 
   useEffect(() => {
@@ -68,14 +71,14 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
                   animate={
                     out
                       ? {
-                          x: s.x + s.dx,
-                          y: s.y + s.dy,
+                          x: (s.x + s.dx) * scale,
+                          y: (s.y + s.dy) * scale,
                           z: s.z - 200,
                           rotate: s.r * 1.4,
                           opacity: 0,
                           scale: 0.7,
                         }
-                      : { x: s.x, y: s.y, z: s.z, rotate: s.r, opacity: 0.9, scale: 1 }
+                      : { x: s.x * scale, y: s.y * scale, z: s.z, rotate: s.r, opacity: 0.9, scale: 1 }
                   }
                   transition={
                     out
