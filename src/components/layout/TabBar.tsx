@@ -3,14 +3,16 @@ import { X, LayoutDashboard } from "lucide-react";
 import { useWorkspace } from "../../store/workspace";
 import { getTool } from "../../modules/registry";
 import { cn } from "../../lib/utils";
+import { useT } from "../../hooks/useT";
 
 export function TabBar() {
   const { openTabs, activeTab, setActive, closeTab, goDashboard } = useWorkspace();
+  const { t, tTool } = useT();
 
   return (
     <div className="flex h-11 flex-none items-center overflow-x-auto border-b border-forge-border bg-forge-panel/40 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <Tab
-        label="Dashboard"
+        label={t("nav.dashboard")}
         icon={<LayoutDashboard size={13} />}
         active={activeTab === "dashboard"}
         onClick={goDashboard}
@@ -22,7 +24,7 @@ export function TabBar() {
           return (
             <Tab
               key={id}
-              label={tool.title}
+              label={tTool(tool.id, "title")}
               icon={<tool.icon size={13} />}
               active={activeTab === id}
               onClick={() => setActive(id)}

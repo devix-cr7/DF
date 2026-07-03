@@ -10,6 +10,7 @@ A premium, desktop-like developer workspace. Local-first, plugin-based, dark by 
 - Plugin architecture: `src/modules/registry.ts` — add a tool by dropping a component + one entry
 - Cinematic galaxy-orbit intro animation, plays on every visit
 - Dark / light theme (persisted) · fully responsive (mobile drawer, stacked panels)
+- 7-language interface (English, العربية, Español, Français, Deutsch, 日本語, 简体中文) with full RTL support for Arabic — switch from the globe icon in the top bar
 - Tabs, favorites, recents, and history persisted locally (Zustand + localStorage)
 
 **36 tools across 8 categories, all fully working:**
@@ -25,7 +26,7 @@ A premium, desktop-like developer workspace. Local-first, plugin-based, dark by 
 
 ## Not yet built
 
-i18n (7 languages) · PWA/offline support · keyboard shortcut customization · Contact page.
+PWA/offline support · keyboard shortcut customization · Contact page.
 
 ## Run locally
 
@@ -48,3 +49,4 @@ If you rename the repo, update `base` in `vite.config.ts` to match.
 - **SQLite Viewer** loads a WASM engine (`sql.js`) — the binary is bundled in `public/sql-wasm.wasm` so it works fully offline, no CDN needed.
 - **ER Designer**, **Architecture**, and **Flowcharts** use `@xyflow/react` for the canvas — drag nodes, drag from the small dots on their edges to connect them.
 - **PDF Merge** uses `pdf-lib`, entirely client-side — nothing is uploaded anywhere.
+- **Language**: the shell (sidebar, top bar, dashboard, status bar) and every tool's title/description/category are fully translated across all 7 languages, resolved automatically in `ToolShell` from the active tool id — no per-tool wiring needed. Individual tools' internal labels (buttons, form fields inside each tool) are still English-only for now; translating those is the next step if wanted.

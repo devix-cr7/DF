@@ -6,6 +6,7 @@ import { Panel } from "../../components/ui/Panel";
 import { ConstellationField } from "../../components/ui/ConstellationField";
 import { AnimatedText } from "../../components/ui/AnimatedText";
 import { TiltCard } from "../../components/ui/TiltCard";
+import { useT } from "../../hooks/useT";
 
 const container = {
   hidden: {},
@@ -18,6 +19,7 @@ const item = {
 
 export function Dashboard() {
   const { openTool, favorites, recents } = useWorkspace();
+  const { t, tCategory } = useT();
   const favoriteTools = tools.filter((t) => favorites.includes(t.id));
   const recentTools = recents.map((id) => tools.find((t) => t.id === id)).filter(Boolean) as typeof tools;
 
@@ -37,7 +39,7 @@ export function Dashboard() {
           <div>
             <AnimatedText
               as="h1"
-              text="Welcome back to DevForge"
+              text={t("dashboard.welcome")}
               className="font-display text-xl font-semibold"
             />
             <motion.p
@@ -46,28 +48,28 @@ export function Dashboard() {
               transition={{ delay: 0.5, duration: 0.4 }}
               className="text-[13px] text-forge-muted"
             >
-              {tools.length} tools · {categories.length} categories · everything runs locally
+              {t("dashboard.stats", { tools: tools.length, cats: categories.length })}
             </motion.p>
           </div>
         </motion.div>
 
         {favoriteTools.length > 0 && (
           <motion.section variants={item} className="mb-8">
-            <SectionTitle icon={Star} label="Favorites" />
+            <SectionTitle icon={Star} label={t("nav.favorites")} />
             <ToolGrid list={favoriteTools} onOpen={openTool} />
           </motion.section>
         )}
 
         {recentTools.length > 0 && (
           <motion.section variants={item} className="mb-8">
-            <SectionTitle icon={Clock} label="Recently used" />
+            <SectionTitle icon={Clock} label={t("nav.recent")} />
             <ToolGrid list={recentTools} onOpen={openTool} />
           </motion.section>
         )}
 
         {categories.map((cat) => (
           <motion.section key={cat.id} variants={item} className="mb-8">
-            <SectionTitle icon={cat.icon} label={cat.label} />
+            <SectionTitle icon={cat.icon} label={tCategory(cat.id)} />
             <ToolGrid list={tools.filter((t) => t.category === cat.id)} onOpen={openTool} />
           </motion.section>
         ))}
@@ -88,6 +90,7 @@ function SectionTitle({ icon: Icon, label }: { icon: typeof Star; label: string 
 }
 
 function ToolGrid({ list, onOpen }: { list: typeof tools; onOpen: (id: string) => void }) {
+  const { tTool } = useT();
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {list.map((tool) => (
@@ -103,8 +106,8 @@ function ToolGrid({ list, onOpen }: { list: typeof tools; onOpen: (id: string) =
               />
             </div>
             <div>
-              <p className="text-[13px] font-medium text-forge-text">{tool.title}</p>
-              <p className="text-[11.5px] text-forge-muted">{tool.description}</p>
+              <p className="text-[13px] font-medium text-forge-text">{tTool(tool.id, "title")}</p>
+              <p className="text-[11.5px] text-forge-muted">{tTool(tool.id, "desc")}</p>
             </div>
           </Panel>
         </TiltCard>

@@ -3,6 +3,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
 import { useWorkspace } from "../../store/workspace";
 import { getTool } from "../../modules/registry";
+import { useT } from "../../hooks/useT";
 
 function dayLabel(ts: number) {
   const d = new Date(ts);
@@ -18,6 +19,7 @@ function dayLabel(ts: number) {
 
 export default function HistoryTool() {
   const { historyLog, openTool, clearHistory } = useWorkspace();
+  const { tTool } = useT();
 
   const groups = historyLog.reduce<Record<string, typeof historyLog>>((acc, entry) => {
     const label = dayLabel(entry.ts);
@@ -60,7 +62,7 @@ export default function HistoryTool() {
                         <tool.icon size={14} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] text-forge-text">{tool.title}</p>
+                        <p className="truncate text-[13px] text-forge-text">{tTool(tool.id, "title")}</p>
                       </div>
                       <span className="shrink-0 text-[11px] text-forge-faint">
                         {new Date(entry.ts).toLocaleTimeString(undefined, {

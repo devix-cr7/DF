@@ -4,19 +4,22 @@ import { Search, LayoutDashboard, Star, Flame } from "lucide-react";
 import { categories, tools } from "../../modules/registry";
 import { useWorkspace } from "../../store/workspace";
 import { cn } from "../../lib/utils";
+import { useT } from "../../hooks/useT";
 
 export function Sidebar() {
   const [query, setQuery] = useState("");
   const { activeTab, openTool, goDashboard, favorites } = useWorkspace();
+  const { t, tCategory, tTool } = useT();
 
   const filtered = useMemo(() => {
     if (!query.trim()) return tools;
     const q = query.toLowerCase();
     return tools.filter(
-      (t) =>
-        t.title.toLowerCase().includes(q) ||
-        t.keywords?.some((k) => k.includes(q))
+      (tool) =>
+        tTool(tool.id, "title").toLowerCase().includes(q) ||
+        tool.keywords?.some((k) => k.includes(q))
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   return (
@@ -36,7 +39,7 @@ export function Sidebar() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search tools…"
+            placeholder={t("nav.search")}
             className="w-full bg-transparent text-[13px] text-forge-text outline-none placeholder:text-forge-faint"
           />
         </div>
@@ -44,21 +47,21 @@ export function Sidebar() {
 
       <nav className="flex-1 overflow-y-auto px-2 pb-3">
         <NavItem
-          label="Dashboard"
+          label={t("nav.dashboard")}
           icon={LayoutDashboard}
           active={activeTab === "dashboard"}
           onClick={goDashboard}
         />
 
         {favorites.length > 0 && !query && (
-          <Section label="Favorites">
+          <Section label={t("nav.favorites")}>
             {favorites.map((id) => {
               const tool = tools.find((t) => t.id === id);
               if (!tool) return null;
               return (
                 <NavItem
                   key={id}
-                  label={tool.title}
+                  label={tTool(tool.id, "title")}
                   icon={tool.icon}
                   active={activeTab === id}
                   onClick={() => openTool(id)}
@@ -72,11 +75,11 @@ export function Sidebar() {
           const items = filtered.filter((t) => t.category === cat.id);
           if (items.length === 0) return null;
           return (
-            <Section key={cat.id} label={cat.label}>
+            <Section key={cat.id} label={tCategory(cat.id)}>
               {items.map((tool) => (
                 <NavItem
                   key={tool.id}
-                  label={tool.title}
+                  label={tTool(tool.id, "title")}
                   icon={tool.icon}
                   active={activeTab === tool.id}
                   onClick={() => openTool(tool.id)}
@@ -116,7 +119,7 @@ function NavItem({
     <button
       onClick={onClick}
       className={cn(
-        "relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors duration-200",
+        "relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors duration-200 rtl:text-right",
         active ? "text-forge-text" : "text-forge-muted hover:text-forge-text hover:bg-forge-panel2"
       )}
     >
@@ -130,7 +133,7 @@ function NavItem({
       {active && (
         <motion.div
           layoutId="sidebar-glow"
-          className="molten-indicator absolute left-0 top-1 bottom-1 w-[2.5px] rounded-full"
+          className="molten-indicator absolute top-1 bottom-1 w-[2.5px] rounded-full ltr:left-0 rtl:right-0"
           transition={{ type: "spring", stiffness: 500, damping: 40 }}
         />
       )}
