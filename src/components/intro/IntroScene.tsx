@@ -4,8 +4,6 @@ import { Flame } from "lucide-react";
 import { tools } from "../../modules/registry";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
-const SEEN_KEY = "devforge-intro-seen";
-
 // Fixed "galaxy" positions in 3D space — deterministic, tuned by eye.
 // dir biases where each icon flies toward on exit (negative x/y = toward sidebar/topbar).
 const SCATTER = [
@@ -33,7 +31,6 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
-      localStorage.setItem(SEEN_KEY, "1");
       onDone();
       return;
     }
@@ -47,12 +44,7 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
   }, []);
 
   return (
-    <AnimatePresence
-      onExitComplete={() => {
-        localStorage.setItem(SEEN_KEY, "1");
-        onDone();
-      }}
-    >
+    <AnimatePresence onExitComplete={onDone}>
       {visible && (
         <motion.div
           exit={{ opacity: 0 }}
@@ -130,12 +122,4 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
       )}
     </AnimatePresence>
   );
-}
-
-export function hasSeenIntro() {
-  try {
-    return localStorage.getItem(SEEN_KEY) === "1";
-  } catch {
-    return true;
-  }
 }
