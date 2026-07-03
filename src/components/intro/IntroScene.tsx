@@ -5,7 +5,7 @@ import { tools } from "../../modules/registry";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
 // Fixed "galaxy" positions in 3D space — deterministic, tuned by eye.
-// dir biases where each icon flies toward on exit (negative x/y = toward sidebar/topbar).
+// dir biases where each icon finally flies toward (negative x/y = toward sidebar/topbar).
 const SCATTER = [
   { x: -420, y: -180, z: -260, r: -35, dx: -160, dy: -80 },
   { x: 380, y: -220, z: -180, r: 28, dx: 60, dy: -140 },
@@ -21,11 +21,22 @@ const SCATTER = [
   { x: 200, y: -160, z: -340, r: 20, dx: 60, dy: -140 },
 ];
 
+// Rotate a point around the origin — used to make icons swirl around
+// the logo like planets before drifting away to their final spot.
+function rotate(x: number, y: number, deg: number) {
+  const rad = (deg * Math.PI) / 180;
+  return {
+    x: x * Math.cos(rad) - y * Math.sin(rad),
+    y: x * Math.sin(rad) + y * Math.cos(rad),
+  };
+}
+
+const TOTAL_DURATION = 7.2; // seconds — one continuous timeline, no phase cuts
+
 export function IntroScene({ onDone }: { onDone: () => void }) {
-  const [phase, setPhase] = useState<"in" | "out">("in");
   const [visible, setVisible] = useState(true);
   const isMobile = useIsMobile();
-  const scale = isMobile ? 0.45 : 1;
+  const scale = isMobile ? 0.5 : 1;
   const icons = tools.slice(0, SCATTER.length);
 
   useEffect(() => {
@@ -34,12 +45,8 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
       onDone();
       return;
     }
-    const t1 = setTimeout(() => setPhase("out"), 1600);
-    const t2 = setTimeout(() => setVisible(false), 1950);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
+    const t = setTimeout(() => setVisible(false), TOTAL_DURATION * 1000 - 900);
+    return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,48 +55,41 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
       {visible && (
         <motion.div
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           className="fixed inset-0 z-50 grid place-items-center bg-forge-bg"
           style={{ perspective: 1400 }}
         >
           <div className="relative h-0 w-0" style={{ transformStyle: "preserve-3d" }}>
             {icons.map((tool, i) => {
               const s = SCATTER[i];
-              const out = phase === "out";
+              const orbit1 = rotate(s.x, s.y, 55 + i * 2);
+              const orbit2 = rotate(s.x, s.y, 130 + i * 2);
+              const final = { x: (s.x + s.dx) * scale, y: (s.y + s.dy) * scale };
+
               return (
                 <motion.div
                   key={tool.id}
-                  initial={{ x: 0, y: 0, z: -600, opacity: 0, scale: 0.4 }}
-                  animate={
-                    out
-                      ? {
-                          x: (s.x + s.dx) * scale,
-                          y: (s.y + s.dy) * scale,
-                          z: s.z - 200,
-                          rotate: s.r * 1.4,
-                          opacity: 0,
-                          scale: 0.7,
-                        }
-                      : { x: s.x * scale, y: s.y * scale, z: s.z, rotate: s.r, opacity: 0.9, scale: 1 }
-                  }
-                  transition={
-                    out
-                      ? { duration: 1.1, delay: i * 0.03, ease: [0.4, 0, 0.2, 1] }
-                      : { duration: 1.1, delay: 0.3 + i * 0.05, ease: [0.16, 1, 0.3, 1] }
-                  }
+                  initial={{ x: 0, y: 0, z: -700, opacity: 0, scale: 0.35, rotate: 0 }}
+                  animate={{
+                    x: [0, s.x * scale, orbit1.x * scale, orbit2.x * scale, final.x],
+                    y: [0, s.y * scale, orbit1.y * scale, orbit2.y * scale, final.y],
+                    z: [-700, s.z, s.z + 40, s.z, s.z - 220],
+                    opacity: [0, 0.9, 0.95, 0.85, 0],
+                    scale: [0.35, 1, 1.05, 0.95, 0.6],
+                    rotate: [0, s.r, s.r + 90, s.r + 180, s.r + 220],
+                  }}
+                  transition={{
+                    duration: TOTAL_DURATION,
+                    times: [0, 0.22, 0.5, 0.74, 1],
+                    delay: i * 0.05,
+                    ease: [0.45, 0.05, 0.35, 1],
+                  }}
                   className="absolute -left-4 -top-4"
                   style={{ transformStyle: "preserve-3d" }}
                 >
                   <div
                     className="grid h-8 w-8 place-items-center rounded-lg border border-forge-border bg-forge-panel text-ember-400 shadow-panel"
-                    style={
-                      !out
-                        ? {
-                            animation: "orbit-float 3.2s ease-in-out infinite",
-                            animationDelay: `${i * 0.15}s`,
-                          }
-                        : undefined
-                    }
+                    style={{ animation: "orbit-float 4s ease-in-out infinite", animationDelay: `${i * 0.15}s` }}
                   >
                     <tool.icon size={15} />
                   </div>
@@ -99,11 +99,12 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
 
             <motion.div
               initial={{ opacity: 0, scale: 0.7 }}
-              animate={{
-                opacity: phase === "out" ? 0 : 1,
-                scale: phase === "out" ? 1.3 : 1,
+              animate={{ opacity: [0, 1, 1, 0], scale: [0.7, 1, 1.08, 1.3] }}
+              transition={{
+                duration: TOTAL_DURATION,
+                times: [0, 0.12, 0.8, 1],
+                ease: [0.16, 1, 0.3, 1],
               }}
-              transition={{ duration: phase === "out" ? 0.9 : 0.6, delay: phase === "out" ? 0 : 0.15, ease: [0.16, 1, 0.3, 1] }}
               className="absolute -left-7 -top-7 grid h-14 w-14 place-items-center rounded-2xl bg-forge-gradient shadow-glow"
             >
               <Flame size={26} className="text-forge-bg" strokeWidth={2.5} />
@@ -112,8 +113,8 @@ export function IntroScene({ onDone }: { onDone: () => void }) {
 
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: phase === "out" ? 0 : 0.7 }}
-            transition={{ duration: 0.6 }}
+            animate={{ opacity: [0, 0.7, 0.7, 0] }}
+            transition={{ duration: TOTAL_DURATION, times: [0, 0.15, 0.75, 1] }}
             className="absolute bottom-16 font-display text-sm tracking-[0.3em] text-forge-muted"
           >
             DEVFORGE
