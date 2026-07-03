@@ -72,3 +72,11 @@ body {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(0, -10px, 0); }
 }
+
+/* Code, technical strings, and monospace values must never be
+   bidi-reordered by an RTL page — URLs, curl flags, hex codes, hashes,
+   SQL, etc. always read left-to-right regardless of interface language. */
+.font-mono {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
