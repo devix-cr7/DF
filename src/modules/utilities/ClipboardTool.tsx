@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Slot {
@@ -28,6 +29,7 @@ export default function ClipboardTool() {
   const [draft, setDraft] = useState("");
   const { copied, copy } = useCopy();
   const [copiedId, setCopiedId] = useState("");
+  const { t } = useT();
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(slots));
@@ -62,12 +64,12 @@ export default function ClipboardTool() {
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type or paste something to save…"
+            placeholder={t("clipboard.placeholder")}
             rows={2}
             className="flex-1 resize-none rounded-lg border border-forge-border bg-forge-bg/60 p-3 text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
           <div className="flex flex-col gap-2">
-            <Button variant="secondary" size="sm" onClick={pasteFromSystem} title="Paste from clipboard">
+            <Button variant="secondary" size="sm" onClick={pasteFromSystem} title={t("clipboard.paste_from_system")}>
               <ClipboardIcon size={13} />
             </Button>
             <Button variant="primary" size="sm" onClick={save}>
@@ -80,7 +82,7 @@ export default function ClipboardTool() {
           <AnimatePresence initial={false}>
             {slots.length === 0 && (
               <p className="py-8 text-center text-[13px] text-forge-faint">
-                No saved snippets yet — add one above.
+                {t("clipboard.empty")}
               </p>
             )}
             {slots.map((slot) => (
@@ -98,7 +100,7 @@ export default function ClipboardTool() {
                 </p>
                 <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <IconButton
-                    label="Copy"
+                    label={t("copy")}
                     onClick={() => {
                       copy(slot.text);
                       setCopiedId(slot.id);
@@ -110,7 +112,7 @@ export default function ClipboardTool() {
                       <Copy size={14} />
                     )}
                   </IconButton>
-                  <IconButton label="Delete" onClick={() => remove(slot.id)}>
+                  <IconButton label={t("delete")} onClick={() => remove(slot.id)}>
                     <Trash2 size={14} />
                   </IconButton>
                 </div>

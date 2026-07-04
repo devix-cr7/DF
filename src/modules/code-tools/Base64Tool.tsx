@@ -4,11 +4,13 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 export default function Base64Tool() {
   const [mode, setMode] = useState<"encode" | "decode">("encode");
   const [input, setInput] = useState("Hello, DevForge!");
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   let output = "";
   let error: string | null = null;
@@ -18,7 +20,7 @@ export default function Base64Tool() {
         ? btoa(unescape(encodeURIComponent(input)))
         : decodeURIComponent(escape(atob(input.trim())));
   } catch {
-    error = mode === "encode" ? "Could not encode this input." : "Invalid Base64 string.";
+    error = mode === "encode" ? t("base64.encode_error") : t("base64.decode_error");
   }
 
   return (
@@ -28,15 +30,15 @@ export default function Base64Tool() {
       toolbar={
         <>
           <IconButton
-            label="Swap mode"
+            label={t("base64.swap_mode")}
             onClick={() => setMode((m) => (m === "encode" ? "decode" : "encode"))}
           >
             <ArrowLeftRight size={15} />
           </IconButton>
-          <IconButton label="Clear" onClick={() => setInput("")}>
+          <IconButton label={t("clear")} onClick={() => setInput("")}>
             <Trash2 size={15} />
           </IconButton>
-          <IconButton label="Copy output" onClick={() => copy(output)}>
+          <IconButton label={t("copy")} onClick={() => copy(output)}>
             {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
           </IconButton>
         </>
@@ -53,7 +55,7 @@ export default function Base64Tool() {
                 : "text-forge-muted hover:bg-forge-panel2"
             }`}
           >
-            {m}
+            {t(m === "encode" ? "base64.encode" : "base64.decode")}
           </button>
         ))}
       </div>

@@ -1,5 +1,6 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Plus, Trash2, KeyRound } from "lucide-react";
+import { useT } from "../../../hooks/useT";
 
 export interface TableField {
   id: string;
@@ -19,6 +20,7 @@ const TYPES = ["INTEGER", "TEXT", "VARCHAR", "BOOLEAN", "DATE", "FLOAT", "UUID"]
 
 export function TableNode({ data }: NodeProps) {
   const { label, fields, onChange } = data as unknown as TableNodeData;
+  const { t } = useT();
 
   function updateField(id: string, patch: Partial<TableField>) {
     onChange({ fields: fields.map((f) => (f.id === id ? { ...f, ...patch } : f)) });
@@ -45,7 +47,7 @@ export function TableNode({ data }: NodeProps) {
           <div key={f.id} className="group flex items-center gap-1">
             <button
               onClick={() => updateField(f.id, { pk: !f.pk })}
-              title="Primary key"
+              title={t("er.primary_key")}
               className={`grid h-5 w-5 shrink-0 place-items-center rounded ${f.pk ? "text-ember-400" : "text-forge-faint"}`}
             >
               <KeyRound size={11} />
@@ -78,7 +80,7 @@ export function TableNode({ data }: NodeProps) {
           onClick={addField}
           className="flex items-center gap-1 pl-1 pt-1 text-[11px] text-ember-400 hover:text-ember-300"
         >
-          <Plus size={11} /> field
+          <Plus size={11} /> {t("er.field")}
         </button>
       </div>
     </div>

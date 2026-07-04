@@ -5,6 +5,7 @@ import { CodeArea } from "../../components/ui/CodeArea";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 const SAMPLE = "DevForge is a Premium Developer Workspace built for speed and focus.";
 
@@ -32,6 +33,7 @@ export default function TextStudioTool() {
   const [find, setFind] = useState("");
   const [replace, setReplace] = useState("");
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   const stats = useMemo(() => {
     const trimmed = text.trim();
@@ -47,9 +49,9 @@ export default function TextStudioTool() {
   }
 
   const transforms: [string, (s: string) => string][] = [
-    ["UPPER", (s) => s.toUpperCase()],
-    ["lower", (s) => s.toLowerCase()],
-    ["Title", toTitleCase],
+    [t("text.upper"), (s) => s.toUpperCase()],
+    [t("text.lower"), (s) => s.toLowerCase()],
+    [t("text.title_case"), toTitleCase],
     ["camelCase", toCamelCase],
     ["snake_case", toSnakeCase],
     ["kebab-case", toKebabCase],
@@ -60,7 +62,7 @@ export default function TextStudioTool() {
       title="Text Studio"
       description="Case conversion, counting, and find & replace"
       toolbar={
-        <IconButton label="Copy" onClick={() => copy(text)}>
+        <IconButton label={t("copy")} onClick={() => copy(text)}>
           {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
         </IconButton>
       }
@@ -82,10 +84,10 @@ export default function TextStudioTool() {
 
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
-            ["Characters", stats.chars],
-            ["Words", stats.words],
-            ["Lines", stats.lines],
-            ["Sentences", stats.sentences],
+            [t("characters"), stats.chars],
+            [t("words"), stats.words],
+            [t("lines"), stats.lines],
+            [t("sentences"), stats.sentences],
           ].map(([label, val]) => (
             <div key={label as string} className="rounded-lg border border-forge-border bg-forge-bg/40 p-2.5 text-center">
               <p className="font-mono text-lg text-ember-400">{val}</p>
@@ -98,17 +100,17 @@ export default function TextStudioTool() {
           <input
             value={find}
             onChange={(e) => setFind(e.target.value)}
-            placeholder="Find…"
+            placeholder={t("find")}
             className="min-w-[120px] flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
           <input
             value={replace}
             onChange={(e) => setReplace(e.target.value)}
-            placeholder="Replace with…"
+            placeholder={t("replace_with")}
             className="min-w-[120px] flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
           <Button variant="primary" size="sm" onClick={applyReplace}>
-            Replace all
+            {t("replace_all")}
           </Button>
         </div>
       </div>

@@ -5,24 +5,26 @@ import { useWorkspace } from "../../store/workspace";
 import { getTool } from "../../modules/registry";
 import { useT } from "../../hooks/useT";
 
-function dayLabel(ts: number) {
+function dayLabel(ts: number, todayLabel: string, yesterdayLabel: string) {
   const d = new Date(ts);
   const today = new Date();
   const yesterday = new Date();
   yesterday.setDate(today.getDate() - 1);
   const sameDay = (a: Date, b: Date) =>
     a.toDateString() === b.toDateString();
-  if (sameDay(d, today)) return "Today";
-  if (sameDay(d, yesterday)) return "Yesterday";
+  if (sameDay(d, today)) return todayLabel;
+  if (sameDay(d, yesterday)) return yesterdayLabel;
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
 export default function HistoryTool() {
   const { historyLog, openTool, clearHistory } = useWorkspace();
-  const { tTool } = useT();
+  const { t, tTool } = useT();
+  const todayLabel = t("history.today");
+  const yesterdayLabel = t("history.yesterday");
 
   const groups = historyLog.reduce<Record<string, typeof historyLog>>((acc, entry) => {
-    const label = dayLabel(entry.ts);
+    const label = dayLabel(entry.ts, todayLabel, yesterdayLabel);
     (acc[label] ??= []).push(entry);
     return acc;
   }, {});
@@ -34,14 +36,14 @@ export default function HistoryTool() {
       toolbar={
         historyLog.length > 0 ? (
           <Button variant="ghost" size="sm" onClick={clearHistory}>
-            <Trash2 size={13} /> Clear
+            <Trash2 size={13} /> {t("clear")}
           </Button>
         ) : undefined
       }
     >
       {historyLog.length === 0 ? (
         <p className="py-10 text-center text-[13px] text-forge-faint">
-          Nothing opened yet — your activity will show up here.
+          {t("history.empty")}
         </p>
       ) : (
         <div className="space-y-6 overflow-y-auto">

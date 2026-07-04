@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
@@ -49,6 +50,7 @@ const SAMPLE = `name,role,tool\nSeif,Developer,DevForge\nClaude,Assistant,Claude
 export default function CsvTool() {
   const [csv, setCsv] = useState(SAMPLE);
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   const rows = useMemo(() => parseCsv(csv), [csv]);
   const [header, ...body] = rows;
@@ -69,7 +71,7 @@ export default function CsvTool() {
       title="CSV Viewer"
       description="Paste CSV, view as a table, convert to JSON"
       toolbar={
-        <IconButton label="Copy JSON" onClick={() => copy(json)}>
+        <IconButton label={t("csv.copy_json")} onClick={() => copy(json)}>
           {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
         </IconButton>
       }
@@ -79,7 +81,7 @@ export default function CsvTool() {
           value={csv}
           onChange={(e) => setCsv(e.target.value)}
           className="h-28 flex-none"
-          placeholder="Paste CSV…"
+          placeholder={t("csv.paste_placeholder")}
         />
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2">
           <div className="min-h-[200px] overflow-auto rounded-lg border border-forge-border md:min-h-0">

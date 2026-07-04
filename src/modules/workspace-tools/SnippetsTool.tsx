@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 interface Snippet {
   id: string;
@@ -37,6 +38,7 @@ export default function SnippetsTool() {
   const [snippets, setSnippets] = useState<Snippet[]>(load);
   const [activeId, setActiveId] = useState<string | null>(null);
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(snippets));
@@ -45,7 +47,7 @@ export default function SnippetsTool() {
   const active = snippets.find((s) => s.id === activeId) ?? snippets[0] ?? null;
 
   function create() {
-    const s: Snippet = { id: crypto.randomUUID(), title: "New snippet", lang: "JavaScript", code: "" };
+    const s: Snippet = { id: crypto.randomUUID(), title: t("snippets.new"), lang: "JavaScript", code: "" };
     setSnippets((list) => [s, ...list]);
     setActiveId(s.id);
   }
@@ -65,7 +67,7 @@ export default function SnippetsTool() {
             onClick={create}
             className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-forge-border py-2 text-xs text-forge-muted hover:border-ember-600/50 hover:text-forge-text"
           >
-            <Plus size={13} /> New snippet
+            <Plus size={13} /> {t("snippets.new")}
           </button>
           <div className="min-h-[120px] flex-1 space-y-1 overflow-y-auto md:min-h-0">
             {snippets.map((s) => (
@@ -76,12 +78,12 @@ export default function SnippetsTool() {
                   active?.id === s.id ? "bg-forge-panel2 text-forge-text" : "text-forge-muted hover:bg-forge-panel2/60"
                 }`}
               >
-                {s.title || "Untitled"}
+                {s.title || t("untitled")}
                 <span className="ml-2 text-[10px] text-forge-faint">{s.lang}</span>
               </button>
             ))}
             {snippets.length === 0 && (
-              <p className="px-2 py-6 text-center text-[12px] text-forge-faint">No snippets yet</p>
+              <p className="px-2 py-6 text-center text-[12px] text-forge-faint">{t("snippets.empty_list")}</p>
             )}
           </div>
         </div>
@@ -94,7 +96,7 @@ export default function SnippetsTool() {
                   value={active.title}
                   onChange={(e) => update(active.id, { title: e.target.value })}
                   className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-[13px] text-forge-text outline-none focus:border-ember-600/60"
-                  placeholder="Title"
+                  placeholder={t("title")}
                 />
                 <select
                   value={active.lang}
@@ -105,10 +107,10 @@ export default function SnippetsTool() {
                     <option key={l}>{l}</option>
                   ))}
                 </select>
-                <IconButton label="Copy" onClick={() => copy(active.code)}>
+                <IconButton label={t("copy")} onClick={() => copy(active.code)}>
                   {copied ? <Check size={14} className="text-ember-400" /> : <Copy size={14} />}
                 </IconButton>
-                <IconButton label="Delete" onClick={() => remove(active.id)}>
+                <IconButton label={t("delete")} onClick={() => remove(active.id)}>
                   <Trash2 size={14} />
                 </IconButton>
               </div>
@@ -120,7 +122,7 @@ export default function SnippetsTool() {
             </>
           ) : (
             <div className="grid flex-1 place-items-center text-[13px] text-forge-faint">
-              Select or create a snippet
+              {t("snippets.select_hint")}
             </div>
           )}
         </div>

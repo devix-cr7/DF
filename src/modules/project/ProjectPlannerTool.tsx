@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ToolShell } from "../../components/ui/ToolShell";
+import { useT } from "../../hooks/useT";
 
 interface Task {
   id: string;
@@ -9,10 +10,10 @@ interface Task {
   col: "todo" | "doing" | "done";
 }
 
-const COLUMNS: { id: Task["col"]; label: string; color: string }[] = [
-  { id: "todo", label: "To Do", color: "text-forge-muted" },
-  { id: "doing", label: "In Progress", color: "text-ember-400" },
-  { id: "done", label: "Done", color: "text-emerald-400" },
+const COLUMNS: { id: Task["col"]; labelKey: string; color: string }[] = [
+  { id: "todo", labelKey: "planner.todo", color: "text-forge-muted" },
+  { id: "doing", labelKey: "planner.doing", color: "text-ember-400" },
+  { id: "done", labelKey: "planner.done", color: "text-emerald-400" },
 ];
 
 const STORAGE_KEY = "devforge-planner";
@@ -34,6 +35,7 @@ function load(): Task[] {
 }
 
 export default function ProjectPlannerTool() {
+  const { t } = useT();
   const [tasks, setTasks] = useState<Task[]>(load);
   const [draft, setDraft] = useState("");
   const [dragId, setDragId] = useState<string | null>(null);
@@ -62,7 +64,7 @@ export default function ProjectPlannerTool() {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && add()}
-            placeholder="Add a task…"
+            placeholder={t("planner.add_task")}
             className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
           <button
@@ -82,12 +84,12 @@ export default function ProjectPlannerTool() {
               className="flex min-h-[160px] flex-col gap-2 rounded-xl border border-forge-border bg-forge-bg/30 p-3"
             >
               <p className={`text-[11px] font-semibold uppercase tracking-wider ${col.color}`}>
-                {col.label} · {tasks.filter((t) => t.col === col.id).length}
+                {t(col.labelKey)} · {tasks.filter((task) => task.col === col.id).length}
               </p>
               <div className="flex-1 space-y-2">
                 <AnimatePresence initial={false}>
                   {tasks
-                    .filter((t) => t.col === col.id)
+                    .filter((task) => task.col === col.id)
                     .map((task) => (
                       <motion.div
                         key={task.id}

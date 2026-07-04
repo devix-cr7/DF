@@ -2,8 +2,10 @@ import { useRef, useState } from "react";
 import { Upload, Download } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
+import { useT } from "../../hooks/useT";
 
 export default function ImageTool() {
+  const { t } = useT();
   const [src, setSrc] = useState<string | null>(null);
   const [origSize, setOrigSize] = useState(0);
   const [width, setWidth] = useState(800);
@@ -82,7 +84,7 @@ export default function ImageTool() {
           >
             <div className="flex flex-col items-center gap-2">
               <Upload size={22} />
-              <span className="text-sm">Click to upload an image</span>
+              <span className="text-sm">{t("image.click_upload")}</span>
             </div>
           </button>
         ) : (
@@ -94,19 +96,19 @@ export default function ImageTool() {
             <div className="flex flex-col gap-4 overflow-y-auto">
               <div className="grid grid-cols-2 gap-2">
                 <NumberField
-                  label="Width"
+                  label={t("width")}
                   value={width}
                   onChange={(v) => reprocess(v, Math.round(v / aspectRef.current))}
                 />
                 <NumberField
-                  label="Height"
+                  label={t("height")}
                   value={height}
                   onChange={(v) => reprocess(Math.round(v * aspectRef.current), v)}
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-forge-muted">Format</label>
+                <label className="text-xs font-semibold text-forge-muted">{t("format")}</label>
                 <select
                   value={format}
                   onChange={(e) => reprocess(width, height, e.target.value as typeof format)}
@@ -121,7 +123,7 @@ export default function ImageTool() {
               {format !== "image/png" && (
                 <div>
                   <label className="text-xs font-semibold text-forge-muted">
-                    Quality: {Math.round(quality * 100)}%
+                    {t("quality")}: {Math.round(quality * 100)}%
                   </label>
                   <input
                     type="range"
@@ -136,22 +138,22 @@ export default function ImageTool() {
               )}
 
               <div className="rounded-lg border border-forge-border bg-forge-bg/40 p-3 text-xs text-forge-muted">
-                <p>Original: {formatBytes(origSize)}</p>
-                <p>Output: {formatBytes(outSize)}</p>
+                <p dir="ltr" className="text-left">{t("original")}: {formatBytes(origSize)}</p>
+                <p dir="ltr" className="text-left">{t("image.output")}: {formatBytes(outSize)}</p>
                 {outSize > 0 && origSize > 0 && (
-                  <p className="mt-1 text-ember-400">
+                  <p dir="ltr" className="mt-1 text-left text-ember-400">
                     {outSize < origSize
-                      ? `${Math.round((1 - outSize / origSize) * 100)}% smaller`
-                      : `${Math.round((outSize / origSize - 1) * 100)}% larger`}
+                      ? `${Math.round((1 - outSize / origSize) * 100)}% ${t("image.smaller")}`
+                      : `${Math.round((outSize / origSize - 1) * 100)}% ${t("image.larger")}`}
                   </p>
                 )}
               </div>
 
               <Button variant="primary" onClick={download}>
-                <Download size={14} /> Download
+                <Download size={14} /> {t("download")}
               </Button>
               <Button variant="ghost" onClick={() => fileInput.current?.click()}>
-                Replace image
+                {t("image.replace")}
               </Button>
             </div>
           </div>

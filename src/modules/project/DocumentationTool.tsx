@@ -3,6 +3,7 @@ import { Plus, Trash2, Download } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { IconButton } from "../../components/ui/Panel";
 import { markdownToHtml } from "../../lib/markdown";
+import { useT } from "../../hooks/useT";
 
 interface Page {
   id: string;
@@ -30,6 +31,7 @@ function load(): Page[] {
 }
 
 export default function DocumentationTool() {
+  const { t } = useT();
   const [pages, setPages] = useState<Page[]>(load);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -67,7 +69,7 @@ export default function DocumentationTool() {
       title="Documentation"
       description="Write multi-page docs with live Markdown preview"
       toolbar={
-        <IconButton label="Export all as Markdown" onClick={exportAll}>
+        <IconButton label={t("docs.export_all")} onClick={exportAll}>
           <Download size={15} />
         </IconButton>
       }
@@ -78,7 +80,7 @@ export default function DocumentationTool() {
             onClick={create}
             className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-forge-border py-2 text-xs text-forge-muted hover:border-ember-600/50 hover:text-forge-text"
           >
-            <Plus size={13} /> New page
+            <Plus size={13} /> {t("docs.new_page")}
           </button>
           <div className="min-h-[100px] flex-1 space-y-1 overflow-y-auto md:min-h-0">
             {pages.map((p) => (
@@ -89,7 +91,7 @@ export default function DocumentationTool() {
                   active?.id === p.id ? "bg-forge-panel2 text-forge-text" : "text-forge-muted hover:bg-forge-panel2/60"
                 }`}
               >
-                {p.title || "Untitled"}
+                {p.title || t("untitled")}
               </button>
             ))}
           </div>
@@ -104,7 +106,7 @@ export default function DocumentationTool() {
                   onChange={(e) => update(active.id, { title: e.target.value })}
                   className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-1.5 text-[13px] text-forge-text outline-none"
                 />
-                <IconButton label="Delete" onClick={() => remove(active.id)}>
+                <IconButton label={t("delete")} onClick={() => remove(active.id)}>
                   <Trash2 size={14} />
                 </IconButton>
               </div>
@@ -121,7 +123,7 @@ export default function DocumentationTool() {
           </>
         ) : (
           <div className="col-span-2 grid place-items-center text-[13px] text-forge-faint">
-            Create a page to get started
+            {t("docs.create_hint")}
           </div>
         )}
       </div>

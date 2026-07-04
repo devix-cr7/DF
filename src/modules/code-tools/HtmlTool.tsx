@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 import { formatHtml, minifyHtml } from "../../lib/formatters";
 
 export default function HtmlTool() {
@@ -11,6 +12,7 @@ export default function HtmlTool() {
     "<div class=\"card\"><h2>DevForge</h2><p>Built for developers.</p></div>"
   );
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   return (
     <ToolShell
@@ -18,13 +20,13 @@ export default function HtmlTool() {
       description="Beautify or minify HTML markup"
       toolbar={
         <>
-          <IconButton label="Beautify" onClick={() => setCode(formatHtml(code))}>
+          <IconButton label={t("beautify")} onClick={() => setCode(formatHtml(code))}>
             <Wand2 size={15} />
           </IconButton>
-          <IconButton label="Minify" onClick={() => setCode(minifyHtml(code))}>
+          <IconButton label={t("minify")} onClick={() => setCode(minifyHtml(code))}>
             <Minimize2 size={15} />
           </IconButton>
-          <IconButton label="Copy" onClick={() => copy(code)}>
+          <IconButton label={t("copy")} onClick={() => copy(code)}>
             {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
           </IconButton>
         </>

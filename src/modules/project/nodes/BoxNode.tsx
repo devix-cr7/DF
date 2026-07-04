@@ -1,5 +1,6 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Server, Database, Globe, Box, Cloud, Layers } from "lucide-react";
+import { useT } from "../../../hooks/useT";
 
 const ICONS = { server: Server, database: Database, globe: Globe, box: Box, cloud: Cloud, layers: Layers };
 
@@ -13,6 +14,7 @@ export interface BoxNodeData {
 export function BoxNode({ data }: NodeProps) {
   const { label, icon, onChange } = data as unknown as BoxNodeData;
   const Icon = ICONS[icon] ?? Box;
+  const { t } = useT();
 
   return (
     <div className="flex min-w-[160px] items-center gap-2.5 rounded-xl border border-forge-border bg-forge-panel px-3.5 py-3 shadow-panel">
@@ -25,7 +27,7 @@ export function BoxNode({ data }: NodeProps) {
           onChange({ icon: next });
         }}
         className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-forge-panel2 text-ember-400"
-        title="Click to change icon"
+        title={t("arch.change_icon")}
       >
         <Icon size={15} />
       </button>

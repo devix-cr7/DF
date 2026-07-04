@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 interface Endpoint {
   id: string;
@@ -38,6 +39,7 @@ function load(): Endpoint[] {
 export default function ApiDesignerTool() {
   const [endpoints, setEndpoints] = useState<Endpoint[]>(load);
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(endpoints));
@@ -72,14 +74,14 @@ export default function ApiDesignerTool() {
       description="Sketch out endpoints for your API before you build it"
       toolbar={
         <>
-          <IconButton label="Copy as JSON" onClick={() => copy(JSON.stringify(endpoints, null, 2))}>
+          <IconButton label={t("api.copy_json")} onClick={() => copy(JSON.stringify(endpoints, null, 2))}>
             {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
           </IconButton>
           <Button variant="secondary" size="sm" onClick={exportJson}>
-            <Download size={13} /> Export
+            <Download size={13} /> {t("export")}
           </Button>
           <Button variant="primary" size="sm" onClick={add}>
-            <Plus size={13} /> Endpoint
+            <Plus size={13} /> {t("api.endpoint")}
           </Button>
         </>
       }
@@ -111,16 +113,16 @@ export default function ApiDesignerTool() {
               value={ep.description}
               onChange={(e) => update(ep.id, { description: e.target.value })}
               className="w-full flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-2.5 py-1.5 text-[13px] text-forge-text outline-none focus:border-ember-600/60 sm:w-auto"
-              placeholder="Description"
+              placeholder={t("api.description_placeholder")}
             />
-            <IconButton label="Delete" onClick={() => remove(ep.id)}>
+            <IconButton label={t("delete")} onClick={() => remove(ep.id)}>
               <Trash2 size={14} />
             </IconButton>
           </div>
         ))}
         {endpoints.length === 0 && (
           <p className="py-10 text-center text-[13px] text-forge-faint">
-            No endpoints yet — click "Endpoint" to add one.
+            {t("api.no_endpoints")}
           </p>
         )}
       </div>

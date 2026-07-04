@@ -3,6 +3,7 @@ import { Copy, Check } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 export default function UrlTool() {
   const [mode, setMode] = useState<"parse" | "encode">("parse");
@@ -11,6 +12,7 @@ export default function UrlTool() {
   const [encMode, setEncMode] = useState<"encode" | "decode">("encode");
   const { copied, copy } = useCopy();
   const [copiedVal, setCopiedVal] = useState("");
+  const { t } = useT();
 
   const parsed = useMemo(() => {
     try {
@@ -24,7 +26,7 @@ export default function UrlTool() {
     try {
       return encMode === "encode" ? encodeURIComponent(text) : decodeURIComponent(text);
     } catch {
-      return "Invalid input for decoding";
+      return t("url.decode_error");
     }
   }, [text, encMode]);
 
@@ -47,7 +49,7 @@ export default function UrlTool() {
                 mode === m ? "bg-ember-600/20 text-ember-400" : "text-forge-muted hover:bg-forge-panel2"
               }`}
             >
-              {m === "parse" ? "Parse" : "Encode / Decode"}
+              {m === "parse" ? t("url.parse") : t("url.encode_decode")}
             </button>
           ))}
         </div>
@@ -58,21 +60,21 @@ export default function UrlTool() {
           <input
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="Paste a URL…"
+            placeholder={t("url.paste_placeholder")}
             className="w-full rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
           {!parsed ? (
-            <p className="text-xs text-red-400">Not a valid absolute URL.</p>
+            <p className="text-xs text-red-400">{t("url.invalid")}</p>
           ) : (
             <div className="flex-1 space-y-3 overflow-y-auto">
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {[
-                  ["Protocol", parsed.protocol],
-                  ["Host", parsed.host],
-                  ["Hostname", parsed.hostname],
-                  ["Port", parsed.port || "(default)"],
-                  ["Pathname", parsed.pathname],
-                  ["Hash", parsed.hash || "—"],
+                  [t("url.protocol"), parsed.protocol],
+                  [t("url.host"), parsed.host],
+                  [t("url.hostname"), parsed.hostname],
+                  [t("url.port"), parsed.port || t("url.default")],
+                  [t("url.pathname"), parsed.pathname],
+                  [t("url.hash"), parsed.hash || "—"],
                 ].map(([label, value]) => (
                   <Row key={label} label={label} value={value} onCopy={doCopy} copied={copied && copiedVal === value} />
                 ))}
@@ -81,7 +83,7 @@ export default function UrlTool() {
               {[...parsed.searchParams.entries()].length > 0 && (
                 <div>
                   <p className="mb-2 text-[10.5px] uppercase tracking-wider text-forge-faint">
-                    Query Parameters
+                    {t("url.query_params")}
                   </p>
                   <div className="overflow-hidden rounded-lg border border-forge-border">
                     {[...parsed.searchParams.entries()].map(([k, v], i) => (
@@ -110,7 +112,7 @@ export default function UrlTool() {
                   encMode === m ? "bg-ember-600/20 text-ember-400" : "text-forge-muted hover:bg-forge-panel2"
                 }`}
               >
-                {m}
+                {t(m === "encode" ? "base64.encode" : "base64.decode")}
               </button>
             ))}
           </div>

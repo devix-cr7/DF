@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 import { hexToRgb, rgbToHsl, shadesOf, contrastRatio } from "../../lib/color";
 
 export default function ColorTool() {
@@ -9,6 +10,7 @@ export default function ColorTool() {
   const [textColor, setTextColor] = useState("#0A0B0D");
   const { copied, copy } = useCopy();
   const [copiedVal, setCopiedVal] = useState("");
+  const { t } = useT();
 
   const rgb = useMemo(() => hexToRgb(hex), [hex]);
   const hsl = useMemo(() => (rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null), [rgb]);
@@ -63,7 +65,7 @@ export default function ColorTool() {
 
           <div className="rounded-lg border border-forge-border bg-forge-bg/40 p-3">
             <p className="mb-2 text-[10px] uppercase tracking-wider text-forge-faint">
-              Contrast check
+              {t("colors.contrast_check")}
             </p>
             <div className="flex items-center gap-2">
               <input
@@ -76,20 +78,21 @@ export default function ColorTool() {
                 className="flex flex-1 items-center justify-center rounded-lg py-2 text-sm font-medium"
                 style={{ backgroundColor: hex, color: textColor }}
               >
-                Aa Sample
+                {t("colors.sample")}
               </div>
             </div>
             <p
-              className={`mt-2 text-xs ${ratio >= 4.5 ? "text-emerald-400" : "text-red-400"}`}
+              dir="ltr"
+              className={`mt-2 text-left text-xs ${ratio >= 4.5 ? "text-emerald-400" : "text-red-400"}`}
             >
-              Ratio {ratio.toFixed(2)} — {ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : "Fail"}
+              {t("colors.ratio")} {ratio.toFixed(2)} — {ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : t("colors.fail")}
             </p>
           </div>
         </div>
 
         <div className="flex-1">
           <p className="mb-2 text-[10.5px] uppercase tracking-wider text-forge-faint">
-            Shades
+            {t("colors.shades")}
           </p>
           <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
             {shades.map((s) => (

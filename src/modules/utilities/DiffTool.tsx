@@ -2,11 +2,13 @@ import { useMemo, useState } from "react";
 import { diffLines, diffWords } from "diff";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
+import { useT } from "../../hooks/useT";
 
 export default function DiffTool() {
   const [a, setA] = useState("const forge = true;\nfunction build() {\n  return 'v1';\n}");
   const [b, setB] = useState("const forge = true;\nfunction build() {\n  return 'v2';\n}\n// done");
   const [mode, setMode] = useState<"lines" | "words">("lines");
+  const { t } = useT();
 
   const parts = useMemo(
     () => (mode === "lines" ? diffLines(a, b) : diffWords(a, b)),
@@ -30,7 +32,7 @@ export default function DiffTool() {
                 mode === m ? "bg-ember-600/20 text-ember-400" : "text-forge-muted hover:bg-forge-panel2"
               }`}
             >
-              {m}
+              {t(m === "lines" ? "diff.mode_lines" : "diff.mode_words")}
             </button>
           ))}
         </div>
@@ -39,7 +41,7 @@ export default function DiffTool() {
       <div className="flex h-full flex-col gap-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="text-xs font-semibold text-forge-muted">Original</label>
+            <label className="text-xs font-semibold text-forge-muted">{t("diff.original")}</label>
             <CodeArea
               value={a}
               onChange={(e) => setA(e.target.value)}
@@ -47,7 +49,7 @@ export default function DiffTool() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-forge-muted">Changed</label>
+            <label className="text-xs font-semibold text-forge-muted">{t("diff.changed")}</label>
             <CodeArea
               value={b}
               onChange={(e) => setB(e.target.value)}
@@ -57,8 +59,8 @@ export default function DiffTool() {
         </div>
 
         <div className="flex items-center gap-3 text-xs">
-          <span className="text-emerald-400">+{added} added</span>
-          <span className="text-red-400">-{removed} removed</span>
+          <span dir="ltr" className="text-left text-emerald-400">+{added} {t("diff.added")}</span>
+          <span dir="ltr" className="text-left text-red-400">-{removed} {t("diff.removed")}</span>
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto rounded-lg border border-forge-border bg-forge-bg/40 p-3.5">

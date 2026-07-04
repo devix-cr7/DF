@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 interface Condition {
   id: string;
@@ -33,6 +34,7 @@ export default function SqlBuilderTool() {
   const [limit, setLimit] = useState("50");
   const [rawSql, setRawSql] = useState("");
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   const built = useMemo(() => {
     let q = `SELECT ${columns.trim() || "*"}\nFROM ${table}`;
@@ -62,19 +64,19 @@ export default function SqlBuilderTool() {
       <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-4 overflow-y-auto">
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Table" value={table} onChange={setTable} />
-            <Field label="Columns" value={columns} onChange={setColumns} />
+            <Field label={t("sql.table_label")} value={table} onChange={setTable} />
+            <Field label={t("sql.columns_label")} value={columns} onChange={setColumns} />
           </div>
 
           <div>
-            <p className="mb-2 text-xs font-semibold text-forge-muted">WHERE</p>
+            <p className="mb-2 text-xs font-semibold text-forge-muted">{t("sql.where")}</p>
             <div className="space-y-2">
               {conditions.map((c) => (
                 <div key={c.id} className="flex gap-2">
                   <input
                     value={c.column}
                     onChange={(e) => updateCondition(c.id, { column: e.target.value })}
-                    placeholder="column"
+                    placeholder={t("sql.column_placeholder")}
                     className="w-24 rounded-lg border border-forge-border bg-forge-bg/60 px-2 py-1.5 font-mono text-[12.5px] text-forge-text outline-none"
                   />
                   <select
@@ -89,27 +91,27 @@ export default function SqlBuilderTool() {
                   <input
                     value={c.value}
                     onChange={(e) => updateCondition(c.id, { value: e.target.value })}
-                    placeholder="value"
+                    placeholder={t("headers.value_placeholder")}
                     className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-2 py-1.5 font-mono text-[12.5px] text-forge-text outline-none"
                   />
-                  <IconButton label="Remove" onClick={() => removeCondition(c.id)}>
+                  <IconButton label={t("remove")} onClick={() => removeCondition(c.id)}>
                     <Trash2 size={13} />
                   </IconButton>
                 </div>
               ))}
               <button onClick={addCondition} className="flex items-center gap-1.5 text-xs text-ember-400 hover:text-ember-300">
-                <Plus size={12} /> Add condition
+                <Plus size={12} /> {t("sql.add_condition")}
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Order by" value={orderBy} onChange={setOrderBy} />
-            <Field label="Limit" value={limit} onChange={setLimit} />
+            <Field label={t("sql.order_by")} value={orderBy} onChange={setOrderBy} />
+            <Field label={t("sql.limit")} value={limit} onChange={setLimit} />
           </div>
 
           <div>
-            <p className="mb-2 text-xs font-semibold text-forge-muted">Or paste SQL to format</p>
+            <p className="mb-2 text-xs font-semibold text-forge-muted">{t("sql.paste_hint")}</p>
             <div className="flex gap-2">
               <CodeArea
                 value={rawSql}
@@ -123,8 +125,8 @@ export default function SqlBuilderTool() {
 
         <div className="flex min-h-0 flex-col gap-2">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-forge-muted">Generated SQL</p>
-            <IconButton label="Copy" onClick={() => copy(rawSql ? formatSql(rawSql) : built)}>
+            <p className="text-xs font-semibold text-forge-muted">{t("sql.generated")}</p>
+            <IconButton label={t("copy")} onClick={() => copy(rawSql ? formatSql(rawSql) : built)}>
               {copied ? <Check size={14} className="text-ember-400" /> : <Copy size={14} />}
             </IconButton>
           </div>

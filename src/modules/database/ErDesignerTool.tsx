@@ -16,6 +16,7 @@ import "@xyflow/react/dist/style.css";
 import { Plus } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
+import { useT } from "../../hooks/useT";
 import { TableNode, type TableField } from "./nodes/TableNode";
 
 const nodeTypes = { table: TableNode };
@@ -42,6 +43,7 @@ const initialEdges: Edge[] = [
 ];
 
 function Inner() {
+  const { t } = useT();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [count, setCount] = useState(3);
@@ -79,7 +81,7 @@ function Inner() {
     <div className="relative h-full">
       <div className="absolute right-3 top-3 z-10">
         <Button variant="primary" size="sm" onClick={addTable}>
-          <Plus size={13} /> Table
+          <Plus size={13} /> {t("er.add_table")}
         </Button>
       </div>
       <ReactFlow

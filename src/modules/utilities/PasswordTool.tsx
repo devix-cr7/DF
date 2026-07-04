@@ -3,6 +3,7 @@ import { Copy, Check, RefreshCw } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 const SETS = {
   lower: "abcdefghijklmnopqrstuvwxyz",
@@ -31,7 +32,6 @@ function strength(pw: string) {
   return score;
 }
 
-const LABELS = ["Very weak", "Weak", "Fair", "Good", "Strong", "Excellent"];
 const COLORS = ["bg-red-500", "bg-red-500", "bg-ember-500", "bg-ember-400", "bg-emerald-500", "bg-emerald-400"];
 
 export default function PasswordTool() {
@@ -39,6 +39,11 @@ export default function PasswordTool() {
   const [opts, setOpts] = useState({ lower: true, upper: true, digits: true, symbols: true });
   const [pw, setPw] = useState(() => generate(20, { lower: true, upper: true, digits: true, symbols: true }));
   const { copied, copy } = useCopy();
+  const { t } = useT();
+  const LABELS = [
+    t("password.strength.0"), t("password.strength.1"), t("password.strength.2"),
+    t("password.strength.3"), t("password.strength.4"), t("password.strength.5"),
+  ];
 
   const score = useMemo(() => strength(pw), [pw]);
 
@@ -78,7 +83,7 @@ export default function PasswordTool() {
         <p className="-mt-4 text-xs text-forge-muted">{LABELS[score]}</p>
 
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-forge-muted">Length: {length}</label>
+          <label className="text-xs font-semibold text-forge-muted">{t("length")}: {length}</label>
         </div>
         <input
           type="range"
@@ -105,13 +110,13 @@ export default function PasswordTool() {
                 onChange={() => toggle(key)}
                 className="accent-ember-500"
               />
-              {key}
+              {t(`password.set.${key}`)}
             </label>
           ))}
         </div>
 
         <Button variant="primary" onClick={regenerate}>
-          <RefreshCw size={14} /> Generate new
+          <RefreshCw size={14} /> {t("password.generate_new")}
         </Button>
       </div>
     </ToolShell>

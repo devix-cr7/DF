@@ -3,8 +3,10 @@ import { Copy, Check } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 export default function TimestampTool() {
+  const { t } = useT();
   const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
   const [unix, setUnix] = useState(String(now));
   const [iso, setIso] = useState(() => new Date(now * 1000).toISOString());
@@ -35,12 +37,12 @@ export default function TimestampTool() {
     <ToolShell title="Timestamp Converter" description="Unix epoch ⇄ human-readable date">
       <div className="mx-auto flex h-full max-w-lg flex-col gap-6">
         <div className="rounded-lg border border-forge-border bg-forge-bg/40 p-4 text-center">
-          <p className="text-[11px] uppercase tracking-wider text-forge-muted">Current Unix time</p>
+          <p className="text-[11px] uppercase tracking-wider text-forge-muted">{t("timestamp.current")}</p>
           <p className="mt-1 font-mono text-2xl text-ember-400">{now}</p>
         </div>
 
         <Field
-          label="Unix timestamp (seconds)"
+          label={t("timestamp.unix_label")}
           value={unix}
           onChange={fromUnix}
           onCopy={() => {
@@ -50,7 +52,7 @@ export default function TimestampTool() {
           copied={copied && copiedField === "unix"}
         />
         <Field
-          label="ISO 8601"
+          label={t("timestamp.iso")}
           value={iso}
           onChange={fromIso}
           onCopy={() => {
@@ -62,10 +64,10 @@ export default function TimestampTool() {
 
         {valid && (
           <div className="grid grid-cols-2 gap-3 text-[13px]">
-            <Info label="Local" value={parsed.toLocaleString()} />
-            <Info label="UTC" value={parsed.toUTCString()} />
-            <Info label="Relative" value={relative(parsed)} />
-            <Info label="Day of year" value={String(dayOfYear(parsed))} />
+            <Info label={t("timestamp.local")} value={parsed.toLocaleString()} />
+            <Info label={t("timestamp.utc")} value={parsed.toUTCString()} />
+            <Info label={t("timestamp.relative")} value={relative(parsed, t)} />
+            <Info label={t("timestamp.day_of_year")} value={String(dayOfYear(parsed))} />
           </div>
         )}
       </div>
@@ -86,6 +88,7 @@ function Field({
   onCopy: () => void;
   copied: boolean;
 }) {
+  const { t } = useT();
   return (
     <div>
       <label className="text-xs font-semibold text-forge-muted">{label}</label>
@@ -95,7 +98,7 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           className="w-full rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
         />
-        <IconButton label="Copy" onClick={onCopy}>
+        <IconButton label={t("copy")} onClick={onCopy}>
           {copied ? <Check size={14} className="text-ember-400" /> : <Copy size={14} />}
         </IconButton>
       </div>
@@ -112,7 +115,7 @@ function Info({ label, value }: { label: string; value: string }) {
   );
 }
 
-function relative(d: Date) {
+function relative(d: Date, t: (key: string) => string) {
   const diff = (d.getTime() - Date.now()) / 1000;
   const abs = Math.abs(diff);
   const units: [string, number][] = [
@@ -126,10 +129,11 @@ function relative(d: Date) {
   for (const [name, secs] of units) {
     if (abs >= secs || name === "second") {
       const val = Math.round(abs / secs);
-      return `${val} ${name}${val !== 1 ? "s" : ""} ${diff < 0 ? "ago" : "from now"}`;
+      const unitKey = `timestamp.unit.${name}${val !== 1 ? "s" : ""}`;
+      return `${val} ${t(unitKey)} ${diff < 0 ? t("timestamp.ago") : t("timestamp.from_now")}`;
     }
   }
-  return "now";
+  return t("timestamp.now");
 }
 
 function dayOfYear(d: Date) {

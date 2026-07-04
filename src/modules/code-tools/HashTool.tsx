@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 const ALGOS = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] as const;
 
@@ -19,6 +20,7 @@ export default function HashTool() {
   const [input, setInput] = useState("DevForge");
   const [hashes, setHashes] = useState<Record<string, string>>({});
   const { copied, copy } = useCopy();
+  const { t } = useT();
   const [copiedAlgo, setCopiedAlgo] = useState("");
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function HashTool() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           className="h-24 flex-none"
-          placeholder="Text to hash…"
+          placeholder={t("hash.placeholder")}
         />
         <div className="flex-1 space-y-2 overflow-y-auto">
           {ALGOS.map((algo) => (
@@ -52,7 +54,7 @@ export default function HashTool() {
               <div className="mb-1 flex items-center justify-between">
                 <span className="text-xs font-semibold text-ember-400">{algo}</span>
                 <IconButton
-                  label="Copy"
+                  label={t("copy")}
                   onClick={() => {
                     copy(hashes[algo] ?? "");
                     setCopiedAlgo(algo);

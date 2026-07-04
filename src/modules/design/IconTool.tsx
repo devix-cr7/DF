@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 const ICONS: Record<string, LucideIcon> = {
   Home, Search, Settings, User, Users, Bell, Calendar, Clock,
@@ -47,6 +48,7 @@ const ICONS: Record<string, LucideIcon> = {
 export default function IconTool() {
   const [query, setQuery] = useState("");
   const { copied, copy } = useCopy();
+  const { t } = useT();
   const [copiedName, setCopiedName] = useState("");
 
   const names = useMemo(
@@ -60,7 +62,7 @@ export default function IconTool() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search icons…"
+          placeholder={t("icons.search_placeholder")}
           className="w-full rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-[13px] text-forge-text outline-none focus:border-ember-600/60"
         />
         <div className="grid flex-1 grid-cols-4 gap-2 overflow-y-auto sm:grid-cols-6 md:grid-cols-8">
@@ -91,7 +93,7 @@ export default function IconTool() {
         </div>
         {copied && (
           <p className="flex items-center gap-1.5 text-xs text-ember-400">
-            <Copy size={12} /> Import statement copied
+            <Copy size={12} /> {t("icons.copied_import")}
           </p>
         )}
       </div>

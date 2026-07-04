@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 
 const PRESETS = [
   "Content-Type", "Authorization", "Accept", "User-Agent", "Cache-Control",
@@ -23,6 +24,7 @@ export default function HeaderTool() {
   ]);
   const [output, setOutput] = useState<"curl" | "fetch" | "raw">("curl");
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   function update(id: string, field: "key" | "value", v: string) {
     setHeaders((h) => h.map((row) => (row.id === id ? { ...row, [field]: v } : row)));
@@ -60,16 +62,16 @@ export default function HeaderTool() {
                 list="header-presets"
                 value={h.key}
                 onChange={(e) => update(h.id, "key", e.target.value)}
-                placeholder="Header name"
+                placeholder={t("headers.name_placeholder")}
                 className="w-40 rounded-lg border border-forge-border bg-forge-bg/60 px-2.5 py-1.5 font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60 sm:w-52"
               />
               <input
                 value={h.value}
                 onChange={(e) => update(h.id, "value", e.target.value)}
-                placeholder="Value"
+                placeholder={t("headers.value_placeholder")}
                 className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-2.5 py-1.5 font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
               />
-              <IconButton label="Remove" onClick={() => remove(h.id)}>
+              <IconButton label={t("remove")} onClick={() => remove(h.id)}>
                 <Trash2 size={14} />
               </IconButton>
             </div>
@@ -83,7 +85,7 @@ export default function HeaderTool() {
             onClick={add}
             className="flex items-center gap-1.5 text-xs text-ember-400 hover:text-ember-300"
           >
-            <Plus size={13} /> Add header
+            <Plus size={13} /> {t("headers.add")}
           </button>
         </div>
 
@@ -96,11 +98,11 @@ export default function HeaderTool() {
                 output === m ? "bg-ember-600/20 text-ember-400" : "text-forge-muted hover:bg-forge-panel2"
               }`}
             >
-              {m}
+              {m === "raw" ? t("headers.raw") : m}
             </button>
           ))}
           <div className="flex-1" />
-          <IconButton label="Copy" onClick={() => copy(code)}>
+          <IconButton label={t("copy")} onClick={() => copy(code)}>
             {copied ? <Check size={14} className="text-ember-400" /> : <Copy size={14} />}
           </IconButton>
         </div>

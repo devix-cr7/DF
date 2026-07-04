@@ -16,6 +16,7 @@ import "@xyflow/react/dist/style.css";
 import { Plus } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
+import { useT } from "../../hooks/useT";
 import { BoxNode, type BoxNodeData } from "./nodes/BoxNode";
 
 const nodeTypes = { box: BoxNode };
@@ -24,19 +25,18 @@ function makeBox(id: string, label: string, icon: BoxNodeData["icon"], x: number
   return { id, type: "box", position: { x, y }, data: { label, icon, onChange: () => {} } };
 }
 
-const initialNodes: Node[] = [
-  makeBox("client", "Client (React)", "globe", 60, 40),
-  makeBox("api", "API Server", "server", 60, 200),
-  makeBox("db", "Database", "database", 60, 360),
-];
-
 const initialEdges: Edge[] = [
   { id: "e1", source: "client", target: "api", animated: true, style: { stroke: "#3E6B8A" } },
   { id: "e2", source: "api", target: "db", animated: true, style: { stroke: "#3E6B8A" } },
 ];
 
 function Inner() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const { t } = useT();
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([
+    makeBox("client", t("arch.client"), "globe", 60, 40),
+    makeBox("api", t("arch.api_server"), "server", 60, 200),
+    makeBox("db", t("arch.database"), "database", 60, 360),
+  ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [count, setCount] = useState(0);
 
@@ -61,14 +61,14 @@ function Inner() {
   function addBox() {
     const id = `box_${count}`;
     setCount((c) => c + 1);
-    setNodes((nds) => [...nds, makeBox(id, "New component", "box", 300 + (count % 3) * 40, 40 + (count % 4) * 120)]);
+    setNodes((nds) => [...nds, makeBox(id, t("arch.new_component"), "box", 300 + (count % 3) * 40, 40 + (count % 4) * 120)]);
   }
 
   return (
     <div className="relative h-full">
       <div className="absolute right-3 top-3 z-10">
         <Button variant="primary" size="sm" onClick={addBox}>
-          <Plus size={13} /> Component
+          <Plus size={13} /> {t("arch.component")}
         </Button>
       </div>
       <ReactFlow

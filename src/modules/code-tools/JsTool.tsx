@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 import { formatJs, minifyJs } from "../../lib/js-format";
 
 export default function JsTool() {
@@ -11,6 +12,7 @@ export default function JsTool() {
     "function forge(name){const tools=['json','css','regex'];return tools.map(t=>`${name}:${t}`);}"
   );
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   return (
     <ToolShell
@@ -18,13 +20,13 @@ export default function JsTool() {
       description="Beautify or minify JavaScript"
       toolbar={
         <>
-          <IconButton label="Beautify" onClick={() => setCode(formatJs(code))}>
+          <IconButton label={t("beautify")} onClick={() => setCode(formatJs(code))}>
             <Wand2 size={15} />
           </IconButton>
-          <IconButton label="Minify" onClick={() => setCode(minifyJs(code))}>
+          <IconButton label={t("minify")} onClick={() => setCode(minifyJs(code))}>
             <Minimize2 size={15} />
           </IconButton>
-          <IconButton label="Copy" onClick={() => copy(code)}>
+          <IconButton label={t("copy")} onClick={() => copy(code)}>
             {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
           </IconButton>
         </>

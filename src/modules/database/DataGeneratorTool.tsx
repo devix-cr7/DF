@@ -5,6 +5,7 @@ import { CodeArea } from "../../components/ui/CodeArea";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 import { generateValue, type FieldType } from "../../lib/fakedata";
 
 interface Field {
@@ -29,6 +30,7 @@ export default function DataGeneratorTool() {
   const [format, setFormat] = useState<"json" | "csv">("json");
   const [seed, setSeed] = useState(0);
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   const rows = useMemo(() => {
     return Array.from({ length: count }, (_, i) =>
@@ -75,14 +77,14 @@ export default function DataGeneratorTool() {
       description="Define a schema, generate realistic mock data instantly"
       toolbar={
         <>
-          <IconButton label="Regenerate" onClick={() => setSeed((s) => s + 1)}>
+          <IconButton label={t("regenerate")} onClick={() => setSeed((s) => s + 1)}>
             <RefreshCw size={15} />
           </IconButton>
-          <IconButton label="Copy" onClick={() => copy(output)}>
+          <IconButton label={t("copy")} onClick={() => copy(output)}>
             {copied ? <Check size={15} className="text-ember-400" /> : <Copy size={15} />}
           </IconButton>
           <Button variant="secondary" size="sm" onClick={download}>
-            <Download size={13} /> Download
+            <Download size={13} /> {t("download")}
           </Button>
         </>
       }
@@ -106,18 +108,18 @@ export default function DataGeneratorTool() {
                     <option key={t}>{t}</option>
                   ))}
                 </select>
-                <IconButton label="Remove" onClick={() => remove(f.id)}>
+                <IconButton label={t("remove")} onClick={() => remove(f.id)}>
                   <Trash2 size={13} />
                 </IconButton>
               </div>
             ))}
             <button onClick={addField} className="flex items-center gap-1.5 text-xs text-ember-400 hover:text-ember-300">
-              <Plus size={12} /> Add field
+              <Plus size={12} /> {t("data.add_field")}
             </button>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-forge-muted">Rows: {count}</label>
+            <label className="text-xs font-semibold text-forge-muted">{t("data.rows")}: {count}</label>
             <input
               type="range"
               min={1}

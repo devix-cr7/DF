@@ -4,6 +4,7 @@ import { Upload, Trash2, ArrowUp, ArrowDown, FileStack, Download } from "lucide-
 import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/Panel";
+import { useT } from "../../hooks/useT";
 
 interface PdfFile {
   id: string;
@@ -13,6 +14,7 @@ interface PdfFile {
 }
 
 export default function PdfTool() {
+  const { t } = useT();
   const [files, setFiles] = useState<PdfFile[]>([]);
   const [merging, setMerging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -80,7 +82,7 @@ export default function PdfTool() {
           onClick={() => inputRef.current?.click()}
           className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-forge-border py-6 text-sm text-forge-muted transition-colors hover:border-ember-600/50 hover:text-forge-text"
         >
-          <Upload size={16} /> Click to add PDF files
+          <Upload size={16} /> {t("pdf.click_add")}
         </button>
         <input
           ref={inputRef}
@@ -100,32 +102,32 @@ export default function PdfTool() {
               <FileStack size={16} className="shrink-0 text-ember-400" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[13px] text-forge-text">{f.name}</p>
-                <p className="text-[11px] text-forge-faint">{f.pages ?? "?"} pages</p>
+                <p className="text-[11px] text-forge-faint">{f.pages ?? "?"} {t("pdf.pages")}</p>
               </div>
-              <IconButton label="Move up" onClick={() => move(f.id, -1)} disabled={i === 0}>
+              <IconButton label={t("pdf.move_up")} onClick={() => move(f.id, -1)} disabled={i === 0}>
                 <ArrowUp size={14} />
               </IconButton>
-              <IconButton label="Move down" onClick={() => move(f.id, 1)} disabled={i === files.length - 1}>
+              <IconButton label={t("pdf.move_down")} onClick={() => move(f.id, 1)} disabled={i === files.length - 1}>
                 <ArrowDown size={14} />
               </IconButton>
-              <IconButton label="Remove" onClick={() => remove(f.id)}>
+              <IconButton label={t("remove")} onClick={() => remove(f.id)}>
                 <Trash2 size={14} />
               </IconButton>
             </div>
           ))}
           {files.length === 0 && (
             <p className="py-10 text-center text-[13px] text-forge-faint">
-              Add two or more PDFs to merge them, in order.
+              {t("pdf.hint")}
             </p>
           )}
         </div>
 
         <div className="flex items-center justify-between border-t border-forge-border pt-4">
           <p className="text-xs text-forge-muted">
-            {files.length} file{files.length !== 1 ? "s" : ""} · {totalPages} pages total
+            {files.length} {t("pdf.files_count")} · {totalPages} {t("pdf.pages_total")}
           </p>
           <Button variant="primary" onClick={merge} disabled={files.length < 2 || merging}>
-            <Download size={14} /> {merging ? "Merging…" : "Merge & Download"}
+            <Download size={14} /> {merging ? t("pdf.merging") : t("pdf.merge_download")}
           </Button>
         </div>
       </div>

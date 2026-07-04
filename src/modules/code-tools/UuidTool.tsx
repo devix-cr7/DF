@@ -4,6 +4,7 @@ import { ToolShell } from "../../components/ui/ToolShell";
 import { Button } from "../../components/ui/Button";
 import { IconButton } from "../../components/ui/Panel";
 import { useCopy } from "../../hooks/useCopy";
+import { useT } from "../../hooks/useT";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function UuidTool() {
@@ -12,6 +13,7 @@ export default function UuidTool() {
     Array.from({ length: 8 }, () => crypto.randomUUID())
   );
   const { copied, copy } = useCopy();
+  const { t } = useT();
 
   const regenerate = () => setIds(Array.from({ length: count }, () => crypto.randomUUID()));
 
@@ -30,7 +32,7 @@ export default function UuidTool() {
             className="w-16 rounded-lg border border-forge-border bg-forge-panel2 px-2.5 py-1.5 text-xs text-forge-text outline-none"
           />
           <Button variant="primary" size="sm" onClick={regenerate}>
-            <RefreshCw size={13} /> Generate
+            <RefreshCw size={13} /> {t("generate")}
           </Button>
         </>
       }
@@ -47,7 +49,7 @@ export default function UuidTool() {
             >
               <span className="font-mono text-[13px] text-forge-text">{id}</span>
               <IconButton
-                label="Copy"
+                label={t("copy")}
                 className="opacity-0 group-hover:opacity-100"
                 onClick={() => copy(id)}
               >

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
+import { useT } from "../../hooks/useT";
 
 export default function RegexTool() {
   const [pattern, setPattern] = useState("[A-Z][a-z]+");
@@ -8,6 +9,7 @@ export default function RegexTool() {
   const [text, setText] = useState(
     "DevForge helps Developers Build Great Tools quickly."
   );
+  const { t } = useT();
 
   const { matches, error, highlighted } = useMemo(() => {
     try {
@@ -35,24 +37,26 @@ export default function RegexTool() {
           <input
             value={pattern}
             onChange={(e) => setPattern(e.target.value)}
-            placeholder="Pattern"
-            className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
+            placeholder={t("regex.pattern")}
+            dir="ltr"
+            className="flex-1 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-left font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
           <input
             value={flags}
             onChange={(e) => setFlags(e.target.value)}
-            placeholder="flags"
-            className="w-20 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
+            placeholder={t("regex.flags")}
+            dir="ltr"
+            className="w-20 rounded-lg border border-forge-border bg-forge-bg/60 px-3 py-2 text-left font-mono text-[13px] text-forge-text outline-none focus:border-ember-600/60"
           />
         </div>
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p dir="ltr" className="text-left text-xs text-red-400">{error}</p>}
         <CodeArea
           value={text}
           onChange={(e) => setText(e.target.value)}
           className="h-28 flex-none"
         />
         <div className="min-h-0 flex-1 overflow-y-auto rounded-lg border border-forge-border bg-forge-bg/40 p-3.5">
-          <p className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed">
+          <p dir="ltr" className="whitespace-pre-wrap text-left font-mono text-[13px] leading-relaxed">
             {highlighted.map((p, i) =>
               p.hit ? (
                 <mark key={i} className="rounded bg-ember-600/30 text-ember-200">
@@ -64,7 +68,7 @@ export default function RegexTool() {
             )}
           </p>
         </div>
-        <p className="text-xs text-forge-muted">{matches.length} match{matches.length === 1 ? "" : "es"}</p>
+        <p className="text-xs text-forge-muted">{matches.length} {t("regex.matches")}</p>
       </div>
     </ToolShell>
   );

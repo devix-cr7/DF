@@ -4,6 +4,7 @@ import { Download, FolderTree } from "lucide-react";
 import { ToolShell } from "../../components/ui/ToolShell";
 import { CodeArea } from "../../components/ui/CodeArea";
 import { Button } from "../../components/ui/Button";
+import { useT } from "../../hooks/useT";
 
 const SAMPLE = `src/
   components/
@@ -38,6 +39,7 @@ function parse(text: string): TreeLine[] {
 }
 
 export default function FolderGeneratorTool() {
+  const { t } = useT();
   const [text, setText] = useState(SAMPLE);
   const lines = useMemo(() => parse(text), [text]);
 
@@ -71,14 +73,14 @@ export default function FolderGeneratorTool() {
       description="Sketch a folder tree, download it as a real scaffold"
       toolbar={
         <Button variant="primary" size="sm" onClick={download}>
-          <Download size={13} /> Download ZIP
+          <Download size={13} /> {t("folder.download_zip")}
         </Button>
       }
     >
       <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <p className="mb-1.5 text-xs text-forge-muted">
-            Indent with 2 spaces. End a line with <code className="text-ember-400">/</code> for a folder.
+            {t("folder.hint")}
           </p>
           <CodeArea
             value={text}
