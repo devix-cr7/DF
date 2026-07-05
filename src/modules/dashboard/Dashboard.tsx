@@ -4,8 +4,6 @@ import { tools, categories } from "../../modules/registry";
 import { useWorkspace } from "../../store/workspace";
 import { Panel } from "../../components/ui/Panel";
 import { ConstellationField } from "../../components/ui/ConstellationField";
-import { MeshGrid } from "../../components/ui/MeshGrid";
-import { AuroraWaves } from "../../components/ui/AuroraWaves";
 import { AnimatedText } from "../../components/ui/AnimatedText";
 import { TiltCard } from "../../components/ui/TiltCard";
 import { useT } from "../../hooks/useT";
@@ -33,8 +31,6 @@ export function Dashboard() {
   return (
     <div className="relative h-full overflow-y-auto px-4 py-6 sm:px-8 sm:py-8">
       <ConstellationField count={34} />
-      <MeshGrid className="opacity-70" />
-      <AuroraWaves className="opacity-80" />
       <motion.div initial="hidden" animate="show" variants={container} className="relative z-10 mx-auto max-w-5xl">
         <motion.div variants={item} className="mb-8 flex items-center gap-3">
           <motion.div
