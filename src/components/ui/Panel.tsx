@@ -5,7 +5,8 @@ export function Panel({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-forge-border bg-forge-panel shadow-panel",
+        "rounded-xl border border-forge-border bg-forge-panel/80 shadow-panel backdrop-blur-sm transition-[border-color,box-shadow] duration-300",
+        "hover:border-ember-600/30 hover:shadow-[0_0_0_1px_rgba(217,123,43,0.08),0_8px_24px_-12px_rgba(0,0,0,0.5)]",
         className
       )}
       {...props}

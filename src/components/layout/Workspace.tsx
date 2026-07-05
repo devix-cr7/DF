@@ -8,6 +8,7 @@ import { Dashboard } from "../../modules/dashboard/Dashboard";
 import { useWorkspace } from "../../store/workspace";
 import { getTool } from "../../modules/registry";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { CursorGlow } from "../ui/CursorGlow";
 
 export function Workspace() {
   const { activeTab } = useWorkspace();
@@ -29,6 +30,7 @@ export function Workspace() {
 
   return (
     <div className="flex h-[100dvh] w-screen overflow-hidden bg-forge-bg text-forge-text">
+      <CursorGlow />
       {isMobile ? (
         <AnimatePresence>
           {sidebarOpen && (

@@ -10,11 +10,16 @@ import { useT } from "../../hooks/useT";
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.04 } },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 const item = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
+  hidden: { opacity: 0, y: 14, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const },
+  },
 };
 
 export function Dashboard() {
